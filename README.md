@@ -53,24 +53,6 @@ A premium dark-themed web application that converts currencies in real-time, pro
 
 ---
 
-## 📸 Screenshots
-
-<div align="center">
-
-| Dashboard | Cryptocurrency Grid |
-|:---------:|:-------------------:|
-| ![Dashboard](https://via.placeholder.com/400x250/0b0e1a/22d3ee?text=Dashboard) | ![Crypto](https://via.placeholder.com/400x250/0b0e1a/22d3ee?text=Crypto+Grid) |
-
-| Currency Converter | AI Chatbot |
-|:------------------:|:----------:|
-| ![Converter](https://via.placeholder.com/400x250/0b0e1a/22d3ee?text=Converter) | ![Chatbot](https://via.placeholder.com/400x250/0b0e1a/22d3ee?text=AI+Chatbot) |
-
-</div>
-
-> 💡 *Replace the placeholder images above with actual screenshots from your running app.*
-
----
-
 ## 🚀 Quick Start
 
 ### Prerequisites
