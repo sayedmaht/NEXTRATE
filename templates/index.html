@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="NextRate AI - Real-time currency converter with AI-powered predictions for fiat and cryptocurrency markets">
+    <title>NextRate AI — Real-Time Currency Converter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <!-- Splash Screen -->
+    <div class="splash-screen" id="pageLoader">
+        <div class="splash-logo-anim">⚡</div>
+        <div class="splash-text">NextRate AI</div>
+        <div class="splash-bar">
+            <div class="splash-bar-fill"></div>
+        </div>
+    </div>
+
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="orb"></div>
+        <div class="orb"></div>
+        <div class="orb"></div>
+    </div>
+
+    <!-- App Layout -->
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="sidebar-logo" onclick="return false;">
+                    <div class="logo-icon">⚡</div>
+                    <div class="logo-text">
+                        <span class="brand">NextRate AI</span>
+                        <span class="tagline">Smart Currency</span>
+                    </div>
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section-label">Main</div>
+                <div class="nav-item active" data-page="dashboard" onclick="navigateTo('dashboard')">
+                    <span class="icon">📊</span>
+                    <span class="label">Dashboard</span>
+                </div>
+                <div class="nav-item" data-page="converter" onclick="navigateTo('converter')">
+                    <span class="icon">💱</span>
+                    <span class="label">Converter</span>
+                </div>
+                <div class="nav-section-label">Markets</div>
+                <div class="nav-item" data-page="fiat" onclick="navigateTo('fiat')">
+                    <span class="icon">💵</span>
+                    <span class="label">Fiat Currencies</span>
+                    <span class="badge">56</span>
+                </div>
+                <div class="nav-item" data-page="crypto" onclick="navigateTo('crypto')">
+                    <span class="icon">🪙</span>
+                    <span class="label">Cryptocurrency</span>
+                    <span class="badge">120+</span>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="api-status">
+                    <span class="status-dot" id="apiStatusDot"></span>
+                    <span id="apiStatusText">Connecting to APIs...</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="top-bar-left">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleSidebar()">☰</button>
+                    <h1 class="page-title" id="pageTitle">Dashboard</h1>
+                </div>
+                <div class="top-bar-right">
+                    <div class="search-bar">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="globalSearch" placeholder="Search currencies..."
+                            oninput="handleGlobalSearch(this.value)">
+                    </div>
+                    <div class="live-ticker">
+                        <span class="live-dot"></span>
+                        LIVE
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════ Dashboard Page ══════ -->
+            <section class="page-section active" id="page-dashboard">
+                <div class="stats-row" id="dashboardStats">
+                    <div class="stat-card">
+                        <div class="stat-icon">🪙</div>
+                        <div class="stat-value" id="statTotalCryptos">--</div>
+                        <div class="stat-label">Cryptocurrencies</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💵</div>
+                        <div class="stat-value" id="statTotalFiats">56</div>
+                        <div class="stat-label">Fiat Currencies</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-value" id="statMarketCap">--</div>
+                        <div class="stat-label">Total Market Cap</div>
+                        <div class="stat-change positive" id="statMarketChange">↑ --%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-value" id="statTopMover">--</div>
+                        <div class="stat-label">Top Gainer (24h)</div>
+                        <div class="stat-change positive" id="statTopMoverChange">↑ --%</div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <div>
+                        <h2>🔥 Trending Cryptocurrencies</h2>
+                        <p class="subtitle">Top performing coins in the last 24 hours</p>
+                    </div>
+                </div>
+                <div class="currency-grid" id="dashboardCryptoGrid">
+                    <!-- Populated by JS -->
+                </div>
+
+                <div class="section-header" style="margin-top: 36px;">
+                    <div>
+                        <h2>💵 Popular Fiat Currencies</h2>
+                        <p class="subtitle">Major world currencies exchange rates</p>
+                    </div>
+                </div>
+                <div class="currency-grid" id="dashboardFiatGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- ══════ Converter Page ══════ -->
+            <section class="page-section" id="page-converter">
+                <div class="converter-container">
+                    <div class="converter-card">
+                        <div class="converter-title">
+                            <h2>💱 Currency Converter</h2>
+                            <p>Convert between 50+ fiat currencies and 100+ cryptocurrencies in real time</p>
+                        </div>
+
+                        <div class="converter-input-group">
+                            <label class="converter-input-label">From</label>
+                            <div class="converter-input-row">
+                                <input type="number" class="converter-amount" id="convertAmount" value="1" min="0"
+                                    step="any" oninput="performConversion()">
+                                <div class="converter-select-wrapper">
+                                    <select class="converter-select" id="convertFrom" onchange="performConversion()">
+                                        <optgroup label="💵 Fiat" id="convertFromFiat"></optgroup>
+                                        <optgroup label="🪙 Crypto" id="convertFromCrypto"></optgroup>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="swap-btn-container">
+                            <button class="swap-btn" onclick="swapCurrencies()" title="Swap currencies">⇅</button>
+                        </div>
+
+                        <div class="converter-input-group">
+                            <label class="converter-input-label">To</label>
+                            <div class="converter-input-row">
+                                <input type="number" class="converter-amount" id="convertResult" readonly>
+                                <div class="converter-select-wrapper">
+                                    <select class="converter-select" id="convertTo" onchange="performConversion()">
+                                        <optgroup label="💵 Fiat" id="convertToFiat"></optgroup>
+                                        <optgroup label="🪙 Crypto" id="convertToCrypto"></optgroup>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="converter-result" id="converterResultBox" style="display:none;">
+                            <div class="result-amount" id="resultDisplay">--</div>
+                            <div class="result-rate" id="resultRate">--</div>
+                        </div>
+
+                        <button class="convert-btn" onclick="performConversion()">
+                            ⚡ Convert Now
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══════ Fiat Currencies Page ══════ -->
+            <section class="page-section" id="page-fiat">
+                <div class="section-header">
+                    <div>
+                        <h2>💵 Fiat Currencies</h2>
+                        <p class="subtitle">World currencies with real-time exchange rates vs USD</p>
+                    </div>
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" onclick="filterFiat('all', this)">All</button>
+                        <button class="filter-tab" onclick="filterFiat('americas', this)">Americas</button>
+                        <button class="filter-tab" onclick="filterFiat('europe', this)">Europe</button>
+                        <button class="filter-tab" onclick="filterFiat('asia', this)">Asia</button>
+                        <button class="filter-tab" onclick="filterFiat('other', this)">Other</button>
+                    </div>
+                </div>
+                <div class="currency-grid" id="fiatGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- ══════ Crypto Currencies Page ══════ -->
+            <section class="page-section" id="page-crypto">
+                <div class="section-header">
+                    <div>
+                        <h2>🪙 Cryptocurrencies</h2>
+                        <p class="subtitle">Top 120+ coins by market capitalization</p>
+                    </div>
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" onclick="filterCrypto('all', this)">All</button>
+                        <button class="filter-tab" onclick="filterCrypto('top20', this)">Top 20</button>
+                        <button class="filter-tab" onclick="filterCrypto('gainers', this)">Gainers</button>
+                        <button class="filter-tab" onclick="filterCrypto('losers', this)">Losers</button>
+                    </div>
+                </div>
+                <div class="currency-grid" id="cryptoGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ══════ Currency Detail Modal ══════ -->
+    <div class="modal-overlay" id="currencyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-header-info">
+                    <div class="modal-currency-icon" id="modalIcon"></div>
+                    <div>
+                        <h3 id="modalName">--</h3>
+                        <span class="symbol" id="modalSymbol">--</span>
+                    </div>
+                </div>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-tabs">
+                <button class="modal-tab active" onclick="switchModalTab('overview', this)">Overview</button>
+                <button class="modal-tab" onclick="switchModalTab('history', this)">📈 Historical Chart</button>
+                <button class="modal-tab" onclick="switchModalTab('prediction', this)">🔮 AI Prediction</button>
+            </div>
+            <div class="modal-body">
+                <!-- Overview Tab -->
+                <div class="modal-tab-content active" id="tab-overview">
+                    <div class="overview-grid" id="overviewGrid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                <!-- Historical Chart Tab -->
+                <div class="modal-tab-content" id="tab-history">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>Price History</h3>
+                            <div class="chart-timeframes">
+                                <button class="chart-timeframe-btn" onclick="loadHistory(7, this)">7D</button>
+                                <button class="chart-timeframe-btn active" onclick="loadHistory(30, this)">30D</button>
+                                <button class="chart-timeframe-btn" onclick="loadHistory(90, this)">90D</button>
+                                <button class="chart-timeframe-btn" onclick="loadHistory(365, this)">1Y</button>
+                            </div>
+                        </div>
+                        <div class="chart-canvas-wrapper">
+                            <canvas id="historyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <!-- AI Prediction Tab -->
+                <div class="modal-tab-content" id="tab-prediction">
+                    <div class="prediction-info" id="predictionInfo">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>🔮 AI Price Prediction (30 Days)</h3>
+                        </div>
+                        <div class="chart-canvas-wrapper">
+                            <canvas id="predictionChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="prediction-analysis" id="predictionAnalysis" style="display:none;">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="prediction-factors" id="predictionFactors" style="display:none;">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════ Chatbot ══════ -->
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <div class="chat-avatar">🤖</div>
+                <div class="chat-header-text">
+                    <div class="chat-name">NextRate AI Assistant</div>
+                    <div class="chat-status"><span class="status-dot"></span> Online</div>
+                </div>
+            </div>
+            <button class="chat-close" onclick="toggleChat()">✕</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message">
+                <div class="chat-msg-avatar">🤖</div>
+                <div class="chat-msg-bubble">
+                    <strong>👋 Welcome to NextRate AI!</strong><br><br>
+                    I'm your financial assistant. Ask me about any currency, exchange rates, market analysis, or
+                    predictions!
+                </div>
+            </div>
+        </div>
+        <div class="chat-quick-actions">
+            <button class="quick-action-btn" onclick="sendQuickMessage('Tell me about Bitcoin')">Bitcoin</button>
+            <button class="quick-action-btn" onclick="sendQuickMessage('What is the US Dollar outlook?')">USD
+                Outlook</button>
+            <button class="quick-action-btn" onclick="sendQuickMessage('Top 5 crypto by market cap')">Top 5
+                Crypto</button>
+            <button class="quick-action-btn" onclick="sendQuickMessage('How to start investing in crypto')">Investing
+                Tips</button>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Ask about any currency..."
+                onkeypress="if(event.key==='Enter')sendChatMessage()">
+            <button class="chat-send-btn" onclick="sendChatMessage()">➤</button>
+        </div>
+    </div>
+    <button class="chat-toggle" onclick="toggleChat()" title="Open AI Chat">
+        💬
+        <span class="chat-badge" id="chatBadge" style="display:none">1</span>
+    </button>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+</body>
+
+</html>
