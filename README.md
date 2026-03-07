@@ -79,7 +79,7 @@ export GROQ_API_KEY=your_groq_api_key_here
 python app.py
 ```
 
-Open **http://localhost:5000** in your browser.
+Open **(https://nextrate.vercel.app/)** in your browser.
 
 ---
 
