@@ -77,9 +77,6 @@ export GROQ_API_KEY=your_groq_api_key_here
 
 # Run the application
 python app.py
-```
-
-Open **(https://nextrate.vercel.app/)** in your browser.
 
 ---
 
