@@ -2231,9 +2231,10 @@ body {
         overflow-x: hidden;
     }
 
-    /* ── Top bar: safe-area handled via internal padding ── */
+    /* ── Top bar: fixed padding pushes below Android status bar ── */
     .top-bar {
-        padding: env(safe-area-inset-top, 0px) 14px 0 14px;
+        padding: 32px 14px 0 14px;
+        padding-top: max(32px, env(safe-area-inset-top, 32px));
         min-height: 52px;
         height: auto;
         top: 0;
