@@ -30,8 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hide loader after 1.5s
     setTimeout(() => {
         const loader = document.getElementById('pageLoader');
-        loader.classList.add('fade-out');
-        setTimeout(() => loader.style.display = 'none', 500);
+        loader.classList.add('hidden');
+        setTimeout(() => loader.style.display = 'none', 800);
     }, 1500);
 });
 
@@ -104,10 +104,33 @@ function navigateTo(page) {
 
     // Close mobile sidebar
     document.getElementById('sidebar').classList.remove('open');
+    const overlay = document.getElementById('sidebarOverlay');
+    if (overlay) overlay.classList.remove('active');
+
+    // Update bottom nav if present
+    document.querySelectorAll('.bottom-nav-item').forEach(item => {
+        item.classList.toggle('active', item.dataset.page === page);
+    });
+
+    // Scroll to top to prevent layout shift / zoom issues on mobile
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    // Also reset the main content scroll
+    const mainContent = document.querySelector('.main-content');
+    if (mainContent) mainContent.scrollTop = 0;
 }
 
 function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('open');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    sidebar.classList.toggle('open');
+    if (overlay) overlay.classList.toggle('active');
+}
+
+function updateBottomNav(activeItem) {
+    document.querySelectorAll('.bottom-nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    if (activeItem) activeItem.classList.add('active');
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -121,7 +144,7 @@ function renderDashboard() {
     if (cryptoData.length > 0) {
         const totalMcap = cryptoData.reduce((sum, c) => sum + (c.market_cap || 0), 0);
         document.getElementById('statMarketCap').textContent = formatLargeNumber(totalMcap);
-        
+
         // Find top gainer
         const sorted = [...cryptoData].sort((a, b) => (b.price_change_24h || 0) - (a.price_change_24h || 0));
         if (sorted.length) {
@@ -445,6 +468,24 @@ function openModal(id, type) {
             <div class="overview-item"><div class="label">Currency Code</div><div class="value">${currentModalCurrency.code}</div></div>
         `;
     }
+
+    // Destroy any existing chart instances before switching to overview
+    if (window.historyChartInstance) {
+        window.historyChartInstance.destroy();
+        window.historyChartInstance = null;
+    }
+    if (window.predictionChartInstance) {
+        window.predictionChartInstance.destroy();
+        window.predictionChartInstance = null;
+    }
+
+    // Clear chart/prediction containers so they don't show empty
+    const predInfo = document.getElementById('predictionInfo');
+    if (predInfo) predInfo.innerHTML = '';
+    const predAnalysis = document.getElementById('predictionAnalysis');
+    if (predAnalysis) { predAnalysis.style.display = 'none'; predAnalysis.innerHTML = ''; }
+    const predFactors = document.getElementById('predictionFactors');
+    if (predFactors) { predFactors.style.display = 'none'; predFactors.innerHTML = ''; }
 
     // Reset to overview tab
     switchModalTab('overview', document.querySelector('.modal-tab'));
