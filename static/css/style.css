@@ -2233,8 +2233,7 @@ body {
 
     /* ── Top bar: fixed padding pushes below Android status bar ── */
     .top-bar {
-        padding: 32px 14px 0 14px;
-        padding-top: max(32px, env(safe-area-inset-top, 32px));
+        padding: 36px 14px 8px 14px;
         min-height: 52px;
         height: auto;
         top: 0;
@@ -2373,6 +2372,7 @@ body {
     /* Use solid backgrounds instead of glass (no blur needed) */
     .top-bar {
         background: var(--bg-primary) !important;
+        padding-top: 36px !important;
     }
 
     .sidebar {
