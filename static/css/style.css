@@ -95,10 +95,8 @@ body {
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    padding-top: env(safe-area-inset-top);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
-    padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* ─── Animated Background — Aurora Mesh ───────────────────────────────────── */
@@ -526,8 +524,9 @@ body {
 
 /* ─── Top Bar ─────────────────────────────────────────────────────────────── */
 .top-bar {
-    height: var(--header-height);
-    padding: 0 32px;
+    height: auto;
+    min-height: var(--header-height);
+    padding: env(safe-area-inset-top, 0px) 32px 0 32px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -2232,16 +2231,13 @@ body {
         overflow-x: hidden;
     }
 
-    /* ── FIX 1: Push top-bar below phone status bar ── */
+    /* ── Top bar: safe-area handled via internal padding ── */
     .top-bar {
-        padding: 0 14px;
-        height: 52px;
-        top: env(safe-area-inset-top, 0px);
-        background: rgba(8, 11, 24, 0.92);
-    }
-
-    .main-content {
-        padding-top: env(safe-area-inset-top, 0px);
+        padding: env(safe-area-inset-top, 0px) 14px 0 14px;
+        min-height: 52px;
+        height: auto;
+        top: 0;
+        background: rgba(8, 11, 24, 0.95);
     }
 
     .page-title {
@@ -2354,19 +2350,111 @@ body {
         display: none;
     }
 
-    /* ── Reduce animation overhead on mobile ── */
-    .bg-animation .orb {
-        animation: none;
-        opacity: 0.04;
+    /* ═══════════════════════════════════════════════════════════════════════
+       MOBILE PERFORMANCE — Aggressive optimizations to eliminate lag
+       ═══════════════════════════════════════════════════════════════════════ */
+
+    /* Kill the entire bg-animation — blur(100px) orbs are extremely expensive */
+    .bg-animation {
+        display: none !important;
     }
 
-    .bg-animation::before {
-        animation: none;
+    /* Disable ALL backdrop-filter — this is THE #1 cause of mobile lag */
+    .top-bar,
+    .sidebar,
+    .chat-window,
+    .mobile-bottom-nav,
+    .modal-overlay {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
     }
 
+    /* Use solid backgrounds instead of glass (no blur needed) */
+    .top-bar {
+        background: var(--bg-primary) !important;
+    }
+
+    .sidebar {
+        background: var(--bg-primary) !important;
+    }
+
+    .mobile-bottom-nav {
+        background: var(--bg-primary) !important;
+    }
+
+    .modal-overlay {
+        background: rgba(3, 4, 8, 0.92) !important;
+    }
+
+    .modal-content {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+        background: var(--bg-secondary) !important;
+    }
+
+    .chat-window {
+        background: var(--bg-secondary) !important;
+    }
+
+    /* Remove expensive pseudo-elements on EVERY card (gradient borders, glow) */
+    .currency-card::before,
+    .currency-card::after,
+    .stat-card::before,
+    .stat-card::after,
+    .converter-card::before,
+    .converter-card::after {
+        display: none !important;
+    }
+
+    /* Simplify card rendering — remove backdrop-filter, complex shadows */
+    .currency-card {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+        background: var(--bg-card-solid) !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    .stat-card {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+        background: var(--bg-card-solid) !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    .converter-card {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+        background: var(--bg-card-solid) !important;
+        box-shadow: none !important;
+    }
+
+    /* Remove will-change to free GPU memory */
+    .currency-card,
+    .stat-card,
+    .sidebar {
+        will-change: auto !important;
+    }
+
+    /* Simplify all animations */
     @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(10px); }
-        to   { opacity: 1; transform: translateY(0); }
+        from { opacity: 0; }
+        to   { opacity: 1; }
+    }
+
+    /* Disable logo breathing animation */
+    .logo-icon {
+        animation: none !important;
+    }
+
+    .logo-icon::after {
+        display: none !important;
+    }
+
+    /* Simplify scroll */
+    .main-content,
+    .modal-content,
+    .chat-messages {
+        scroll-behavior: auto;
     }
 
     /* ── Section headers ── */
