@@ -1,4 +1,4 @@
-# NEXTRATE[https://nextrate.vercel.app/]
+# [NEXTRATE](https://nextrate.vercel.app/)
 
 ### Real-Time Currency Converter with AI-Powered Predictions
 
