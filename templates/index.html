@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#FFFDF7">
     <meta name="description"
         content="NextRate AI - Real-time currency converter with AI-powered predictions for fiat and cryptocurrency markets">
     <title>NextRate AI — Real-Time Currency Converter</title>
@@ -30,6 +31,9 @@
 
     <!-- App Layout -->
     <div class="app-layout">
+        <!-- Sidebar Overlay (mobile) -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
@@ -233,6 +237,27 @@
         </main>
     </div>
 
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav">
+        <div class="bottom-nav-item active" data-page="dashboard"
+            onclick="navigateTo('dashboard'); updateBottomNav(this)">
+            <span class="bottom-nav-icon">📊</span>
+            Dashboard
+        </div>
+        <div class="bottom-nav-item" data-page="converter" onclick="navigateTo('converter'); updateBottomNav(this)">
+            <span class="bottom-nav-icon">💱</span>
+            Converter
+        </div>
+        <div class="bottom-nav-item" data-page="fiat" onclick="navigateTo('fiat'); updateBottomNav(this)">
+            <span class="bottom-nav-icon">💵</span>
+            Fiat
+        </div>
+        <div class="bottom-nav-item" data-page="crypto" onclick="navigateTo('crypto'); updateBottomNav(this)">
+            <span class="bottom-nav-icon">🪙</span>
+            Crypto
+        </div>
+    </nav>
+
     <!-- ══════ Currency Detail Modal ══════ -->
     <div class="modal-overlay" id="currencyModal">
         <div class="modal-content">
@@ -264,10 +289,10 @@
                         <div class="chart-header">
                             <h3>Price History</h3>
                             <div class="chart-timeframes">
-                                <button class="chart-timeframe-btn" onclick="loadHistory(7, this)">7D</button>
-                                <button class="chart-timeframe-btn active" onclick="loadHistory(30, this)">30D</button>
-                                <button class="chart-timeframe-btn" onclick="loadHistory(90, this)">90D</button>
-                                <button class="chart-timeframe-btn" onclick="loadHistory(365, this)">1Y</button>
+                                <button class="chart-timeframe-btn" onclick="loadHistory(1, this)">Daily</button>
+                                <button class="chart-timeframe-btn" onclick="loadHistory(7, this)">Weekly</button>
+                                <button class="chart-timeframe-btn active" onclick="loadHistory(30, this)">Monthly</button>
+                                <button class="chart-timeframe-btn" onclick="loadHistory(365, this)">Yearly</button>
                             </div>
                         </div>
                         <div class="chart-canvas-wrapper">
