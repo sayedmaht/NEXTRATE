@@ -301,16 +301,16 @@ function getChartOptions(label) {
         plugins: {
             legend: { display: false },
             tooltip: {
-                backgroundColor: 'rgba(15, 21, 56, 0.95)',
-                titleColor: '#e8eaed',
-                bodyColor: '#9aa0b8',
-                borderColor: 'rgba(108, 92, 231, 0.3)',
-                borderWidth: 1,
+                backgroundColor: '#FFFFFF',
+                titleColor: '#1A1A1A',
+                bodyColor: '#4A4A4A',
+                borderColor: '#1A1A1A',
+                borderWidth: 2,
                 padding: 12,
-                cornerRadius: 10,
+                cornerRadius: 0,
                 displayColors: false,
-                titleFont: { family: 'Inter', weight: '600' },
-                bodyFont: { family: 'JetBrains Mono', size: 13 },
+                titleFont: { family: 'Space Grotesk', weight: '700' },
+                bodyFont: { family: 'Space Mono', size: 13 },
                 callbacks: {
                     label: function (ctx) {
                         return `${label}: ${formatPrice(ctx.raw)}`;
@@ -321,24 +321,24 @@ function getChartOptions(label) {
         scales: {
             x: {
                 grid: {
-                    color: 'rgba(108, 92, 231, 0.05)',
+                    color: 'rgba(26, 26, 26, 0.08)',
                     drawBorder: false,
                 },
                 ticks: {
-                    color: '#5a6178',
-                    font: { family: 'Inter', size: 11 },
+                    color: '#4A4A4A',
+                    font: { family: 'Space Grotesk', size: 11 },
                     maxRotation: 0,
                     maxTicksLimit: 8,
                 }
             },
             y: {
                 grid: {
-                    color: 'rgba(108, 92, 231, 0.05)',
+                    color: 'rgba(26, 26, 26, 0.08)',
                     drawBorder: false,
                 },
                 ticks: {
-                    color: '#5a6178',
-                    font: { family: 'JetBrains Mono', size: 11 },
+                    color: '#4A4A4A',
+                    font: { family: 'Space Mono', size: 11 },
                     callback: function (val) {
                         return formatPrice(val);
                     }
