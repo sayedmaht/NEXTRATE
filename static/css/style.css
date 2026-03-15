@@ -378,7 +378,7 @@ body {
 .top-bar {
     height: auto;
     min-height: var(--header-height);
-    padding: 0 32px;
+    padding: env(safe-area-inset-top, 0px) 32px 0 32px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1845,7 +1845,7 @@ body {
     }
 
     .top-bar {
-        padding: 8px 14px;
+        padding: max(env(safe-area-inset-top, 32px), 32px) 14px 8px 14px;
         min-height: 52px;
         background: var(--bg-card) !important;
     }
