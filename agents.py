@@ -8,7 +8,7 @@ import json
 from groq import Groq
 
 # ─── Configuration ───────────────────────────────────────────────────────────
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "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")
 
 
 def get_groq_client():
