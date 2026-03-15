@@ -19,7 +19,7 @@ app = Flask(__name__)
 CORS(app)
 
 # ─── Configuration ───────────────────────────────────────────────────────────
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "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")
 COINGECKO_BASE = "https://api.coingecko.com/api/v3"
 EXCHANGERATE_BASE = "https://open.er-api.com/v6"
 
@@ -547,104 +547,99 @@ cryptoData_cache = []
 
 
 def get_mock_chat_response(message):
-    """Generate helpful mock chatbot responses."""
-    msg_lower = message.lower()
+    """Generate helpful, human-friendly mock chatbot responses."""
+    msg_lower = message.lower().strip()
 
+    # ── Greetings ──
+    if any(word in msg_lower for word in ["hello", "hi", "hey", "howdy", "sup", "what's up", "good morning", "good evening"]):
+        greetings = [
+            "Hey there! 👋 I'm NextRate AI, your currency sidekick. Ask me anything about currencies, exchange rates, or market trends — I'm here to help!",
+            "Hi! 😊 Welcome to NextRate AI. I can help you with crypto analysis, fiat currency info, exchange rates, and price predictions. What are you curious about?",
+            "Hello! Great to have you here. Whether it's Bitcoin, the Euro, or any other currency — just ask and I'll break it down for you.",
+        ]
+        return random.choice(greetings)
+
+    # ── Thanks ──
+    if any(word in msg_lower for word in ["thanks", "thank you", "thx", "appreciate"]):
+        return random.choice([
+            "You're welcome! Let me know if you have any other currency questions. 😊",
+            "Happy to help! Feel free to ask anything else about currencies or markets.",
+            "Anytime! That's what I'm here for. Got more questions? Fire away!",
+        ])
+
+    # ── Bitcoin ──
     if any(word in msg_lower for word in ["bitcoin", "btc"]):
-        return """**Bitcoin (BTC)** is the world's first and largest cryptocurrency by market cap.
+        responses = [
+            "Bitcoin is the OG of crypto — launched in 2009 by the mysterious Satoshi Nakamoto. It has a hard cap of 21 million coins, which makes it scarce like gold. It runs on Proof of Work and currently dominates about 45% of the total crypto market. Click on a BTC card above to see live price charts and AI predictions!",
+            "BTC is the world's largest cryptocurrency by market cap. It's often called 'digital gold' because of its fixed 21M supply. The next halving event will cut mining rewards again, which historically has preceded major price moves. Want to see its prediction chart? Just click the Bitcoin card!",
+            "Bitcoin has been around since 2009 and remains the king of crypto. With only 21 million coins ever to exist and increasing institutional adoption, it continues to be the benchmark for the entire market. Check out the AI Prediction tab on any BTC card for our forecast!",
+        ]
+        return random.choice(responses) + "\n\n*Not financial advice — always do your own research.*"
 
-📊 **Key Facts:**
-- Created by Satoshi Nakamoto in 2009
-- Maximum supply: 21 million BTC
-- Consensus: Proof of Work (SHA-256)
-- Block time: ~10 minutes
+    # ── Ethereum ──
+    if any(word in msg_lower for word in ["ethereum", "eth"]):
+        responses = [
+            "Ethereum is basically the backbone of DeFi, NFTs, and smart contracts. Since switching to Proof of Stake in 2022, it's become more energy-efficient and potentially deflationary thanks to the EIP-1559 burn mechanism. It's the #2 crypto by market cap and powers most decentralized apps.",
+            "ETH is much more than just a cryptocurrency — it's a whole platform for decentralized applications. After The Merge in 2022, it moved to Proof of Stake, making it greener and introducing staking rewards. Its burn mechanism means supply can actually decrease over time!",
+        ]
+        return random.choice(responses) + "\n\n*Not financial advice — always do your own research.*"
 
-💡 Bitcoin is often called "digital gold" due to its scarcity and store-of-value properties. It remains the dominant crypto asset with ~45% market dominance.
+    # ── Solana ──
+    if any(word in msg_lower for word in ["solana", "sol"]):
+        return "Solana is known for its ultra-fast transactions and low fees — it can handle thousands of transactions per second. It's become a popular choice for DeFi and NFT projects. The SOL ecosystem has grown significantly, though it's had some network outage challenges in the past. Check the AI Prediction tab for our SOL forecast!\n\n*Not financial advice — always do your own research.*"
 
-⚠️ *This is informational only, not financial advice.*"""
+    # ── XRP ──
+    if any(word in msg_lower for word in ["xrp", "ripple"]):
+        return "XRP is designed for fast, cheap cross-border payments. Ripple (the company behind it) has partnerships with major financial institutions worldwide. After a long legal battle with the SEC, its regulatory picture has become clearer, which has impacted market sentiment positively.\n\n*Not financial advice — always do your own research.*"
 
-    elif any(word in msg_lower for word in ["ethereum", "eth"]):
-        return """**Ethereum (ETH)** is the leading smart contract platform.
+    # ── USD ──
+    if any(word in msg_lower for word in ["dollar", "usd"]):
+        return "The US Dollar is the world's reserve currency, making up about 59% of global reserves. Its value is heavily influenced by the Federal Reserve's interest rate decisions, US economic data (jobs, GDP, inflation), and global risk appetite. When uncertainty rises, investors typically flock to the dollar as a safe haven."
 
-📊 **Key Facts:**
-- Created by Vitalik Buterin, launched 2015
-- Consensus: Proof of Stake (since 2022 Merge)
-- Supports DeFi, NFTs, and dApps
-- EIP-1559 burn mechanism makes it potentially deflationary
+    # ── Euro ──
+    if any(word in msg_lower for word in ["euro", "eur"]):
+        return "The Euro is the second most traded currency globally, used by 20 EU countries. The European Central Bank's monetary policy, Eurozone GDP growth, and inflation data are the key drivers. It tends to strengthen when the ECB tightens policy relative to the Fed."
 
-💡 Ethereum powers the majority of decentralized applications and DeFi protocols, making it crucial to the crypto ecosystem.
+    # ── Indian Rupee ──
+    if any(word in msg_lower for word in ["rupee", "inr", "india"]):
+        return "The Indian Rupee is backed by one of the fastest-growing major economies. India's GDP growth rate of ~7% is impressive, though higher inflation (around 5.5%) and a trade deficit put some pressure on the currency. The Reserve Bank of India actively manages the rupee through market interventions."
 
-⚠️ *This is informational only, not financial advice.*"""
+    # ── Predictions ──
+    if any(word in msg_lower for word in ["predict", "forecast", "future", "price target", "will go up", "will go down", "moon"]):
+        return "Great question! For predictions, I'd suggest clicking on any currency card in the dashboard and heading to the **AI Prediction** tab. Our model analyzes market cap, volume, supply dynamics (for crypto) or GDP, inflation, and monetary policy (for fiat) to generate 30-day forecasts with confidence levels.\n\n*Remember: predictions are estimates, not guarantees. Always do your own research!*"
 
-    elif any(word in msg_lower for word in ["dollar", "usd"]):
-        return """**US Dollar (USD)** is the world's primary reserve currency.
+    # ── Conversion ──
+    if any(word in msg_lower for word in ["convert", "exchange", "how much", "rate", "swap"]):
+        return "You can convert between 50+ fiat currencies and 100+ cryptocurrencies using the **Converter** tab! Just select your currencies, enter an amount, and hit Convert. Rates are pulled in real-time from CoinGecko and ExchangeRate API."
 
-📊 **Key Facts:**
-- Issued by the Federal Reserve
-- GDP (US): ~$25.5 trillion
-- Global reserve currency share: ~59%
-- Federal Funds Rate: ~5.25-5.50%
+    # ── Market overview ──
+    if any(word in msg_lower for word in ["market", "overview", "trend", "bull", "bear", "crash", "rally"]):
+        return "The crypto market moves in cycles — we've seen bull runs followed by corrections historically. Key things to watch: Bitcoin dominance (if it rises, altcoins often underperform), total market volume, and macro factors like interest rates. For fiat markets, central bank decisions and geopolitical events drive most of the action. Check the dashboard for real-time data!"
 
-💡 The USD's strength is influenced by Federal Reserve policy, US economic data, and global demand for safe-haven assets.
+    # ── Inflation ──
+    if any(word in msg_lower for word in ["inflation", "cpi", "price rise"]):
+        return "Inflation erodes purchasing power, which directly impacts currency values. Central banks fight high inflation by raising interest rates — this typically strengthens the local currency but can slow economic growth. In crypto, Bitcoin is sometimes seen as an inflation hedge because of its fixed supply of 21 million coins."
 
-⚠️ *This is informational only, not financial advice.*"""
+    # ── Stablecoin ──
+    if any(word in msg_lower for word in ["stablecoin", "usdt", "usdc", "tether"]):
+        return "Stablecoins are cryptocurrencies pegged to a stable asset, usually the US Dollar. USDT (Tether) and USDC (Circle) are the biggest ones. They're widely used for trading, DeFi, and transferring value without exposure to crypto volatility. Their stability depends on the reserves backing them."
 
-    elif any(word in msg_lower for word in ["predict", "forecast", "future"]):
-        return """**Currency Predictions** require analysis of multiple factors:
+    # ── DeFi ──
+    if any(word in msg_lower for word in ["defi", "decentralized finance", "yield", "staking"]):
+        return "DeFi (Decentralized Finance) lets you lend, borrow, trade, and earn yields without traditional banks. Most DeFi runs on Ethereum, but Solana, Avalanche, and others are growing fast. Staking rewards vary — ETH staking currently offers around 3-5% APY. Always research the risks, especially smart contract vulnerabilities!"
 
-🔮 **For Cryptocurrencies:**
-- Market cap & trading volume trends
-- Supply dynamics (halving events, burn mechanisms)
-- Adoption & institutional interest
-- Regulatory developments
+    # ── How does this work / capabilities ──
+    if any(word in msg_lower for word in ["what can you do", "help me", "how does this work", "capabilities", "what do you know"]):
+        return "I'm your currency intelligence assistant! Here's what I can help with:\n\n• **Currency info** — Ask about any crypto or fiat currency\n• **Price predictions** — Click any currency card → AI Prediction tab\n• **Conversions** — Use the Converter tab for real-time rates\n• **Market trends** — I can explain what's moving markets\n• **Education** — Inflation, DeFi, stablecoins, you name it\n\nJust ask me anything in plain language!"
 
-🔮 **For Fiat Currencies:**
-- GDP growth & economic indicators
-- Central bank monetary policy
-- Inflation & interest rates
-- Trade balance & capital flows
-
-💡 Click on any currency card to see our AI-powered prediction charts! Select a currency and navigate to the "AI Prediction" tab for detailed analysis.
-
-⚠️ *Predictions are AI-generated estimates and should not be considered financial advice.*"""
-
-    elif any(word in msg_lower for word in ["convert", "exchange", "rate"]):
-        return """**Currency Conversion** is available in the **Converter** tab! 🔄
-
-You can convert between:
-- 💵 50+ fiat currencies (USD, EUR, GBP, JPY, INR, etc.)
-- 🪙 100+ cryptocurrencies (BTC, ETH, SOL, etc.)
-- 🔀 Cross-conversion between fiat and crypto
-
-💡 Rates are fetched in real-time from CoinGecko and ExchangeRate API. Select the Converter section from the sidebar to get started!"""
-
-    elif any(word in msg_lower for word in ["hello", "hi", "hey"]):
-        return """👋 **Hello! I'm NextRate AI**, your financial assistant.
-
-I can help you with:
-- 📊 **Currency analysis** — Learn about any fiat or crypto currency
-- 🔮 **Price predictions** — AI-powered forecasts
-- 💱 **Exchange rates** — Real-time conversion info
-- 📈 **Market insights** — Trends, charts, and economic indicators
-- 💡 **Education** — Understand financial concepts
-
-What would you like to know? Try asking about Bitcoin, the US Dollar, or any currency!"""
-
-    else:
-        return f"""I appreciate your question about **"{message}"**!
-
-As NextRate AI, I can help with:
-- 📊 Currency details & analysis
-- 🔮 Price predictions & forecasts
-- 💱 Exchange rate information
-- 📈 Market cap & economic indicators
-
-Try asking me about specific currencies like:
-- "Tell me about Bitcoin"
-- "What affects the Euro?"
-- "How does inflation impact USD?"
-
-⚠️ *This is an AI assistant. For specific financial decisions, please consult a licensed financial advisor.*"""
+    # ── Fallback — NOT repeating the question ──
+    fallbacks = [
+        "Interesting question! I'm most helpful with currency topics — try asking me about a specific coin like Bitcoin or Ethereum, a fiat currency like USD or EUR, or about market trends and predictions. I can also explain concepts like inflation, DeFi, and stablecoins!",
+        "Hmm, I'm not sure I fully understood that. I specialize in currencies and markets — try asking about a specific cryptocurrency, exchange rates, or price predictions. You can also click on any currency card for detailed analysis!",
+        "I'd love to help! My expertise is in currencies — both crypto and fiat. Try asking about Bitcoin, the Euro, market trends, or how to use the converter. What would you like to explore?",
+        "That's an interesting one! While I focus mainly on currency analysis and market data, feel free to ask me about any crypto or fiat currency, price forecasts, or financial concepts like inflation and interest rates.",
+    ]
+    return random.choice(fallbacks)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
