@@ -252,8 +252,13 @@ def fiat_rates():
 
 @app.route("/api/fiat/history/<base_currency>/<target_currency>")
 def fiat_history(base_currency, target_currency):
-    """Generate simulated 30-day history for a fiat pair."""
-    cache_key = f"fiat_history_{base_currency}_{target_currency}"
+    """Generate simulated history for a fiat pair."""
+    days_param = request.args.get("days", "30")
+    num_days = 1825 if days_param == "max" else min(int(days_param), 1825)
+    if num_days < 1:
+        num_days = 30
+
+    cache_key = f"fiat_history_{base_currency}_{target_currency}_{days_param}"
     cached = get_cached(cache_key)
     if cached:
         return jsonify(cached)
@@ -273,9 +278,11 @@ def fiat_history(base_currency, target_currency):
     prices = []
     now = datetime.now()
     rate = current_rate * (1 + random.uniform(-0.05, 0.05))
-    for i in range(30, -1, -1):
+    # Scale daily volatility down for longer ranges to avoid unrealistic drift
+    daily_volatility = 0.003 if num_days > 365 else 0.008
+    for i in range(num_days, -1, -1):
         date = now - timedelta(days=i)
-        rate += rate * random.uniform(-0.008, 0.008)
+        rate += rate * random.uniform(-daily_volatility, daily_volatility)
         prices.append({
             "date": int(date.timestamp() * 1000),
             "price": round(rate, 6),
