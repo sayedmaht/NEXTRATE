@@ -28,7 +28,7 @@ async function loadHistory(days, btn) {
     if (currentModalType === 'crypto') {
         url = `/api/crypto/${currentModalCurrency.id}/history?days=${days}`;
     } else {
-        url = `/api/fiat/history/USD/${currentModalCurrency.code}`;
+        url = `/api/fiat/history/USD/${currentModalCurrency.code}?days=${days}`;
     }
 
     try {
@@ -38,6 +38,7 @@ async function loadHistory(days, btn) {
 
         const labels = data.map(p => {
             const d = new Date(p.date);
+            if (days === 'max') return d.toLocaleDateString('en', { month: 'short', year: 'numeric' });
             if (days <= 7) return d.toLocaleDateString('en', { weekday: 'short' });
             if (days <= 30) return d.toLocaleDateString('en', { month: 'short', day: 'numeric' });
             return d.toLocaleDateString('en', { month: 'short', year: '2-digit' });
