@@ -11,6 +11,7 @@ def get_groq_client():
     """Get Groq client instance."""
     if GROQ_API_KEY:
         return Groq(api_key=GROQ_API_KEY)
+    print("⚠️  GROQ_API_KEY not found! Check your .env file.")
     return None
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -95,7 +96,7 @@ Respond with ONLY this JSON (no explanation, no code fences):
             text = text.strip()
         return json.loads(text)
     except Exception as e:
-        print(f"Groq prediction error: {e}")
+        print(f"❌ Groq prediction error: {e}")
         return None
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -175,5 +176,5 @@ def run_chatbot_crew(message, history, nlp_analysis=None, market_context=None):
         )
         return response.choices[0].message.content
     except Exception as e:
-        print(f"Groq chatbot error: {e}")
-        return None
+        print(f"❌ Groq chatbot error: {e}")
+        return f"ERROR: {e}"
