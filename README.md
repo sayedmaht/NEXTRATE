@@ -111,7 +111,7 @@ Open **http://localhost:5000** in your browser.
 | CoinGecko | Crypto prices & data | Free (no key) | — |
 | ExchangeRate | Fiat exchange rates | Free (no key) | — |
 
-> \* Without a Groq API key, AI features fall back to intelligent mock responses. All other features (converter, charts, market data) work fully without any API key.
+> \* A Groq API key is required for AI features (chatbot & predictions). All other features (converter, charts, market data) work fully without any API key.
 
 ---
 
