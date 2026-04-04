@@ -1,8 +1,10 @@
 import os
 import json
+from dotenv import load_dotenv
 from groq import Groq
 
 # ─── Configuration ───────────────────────────────────────────────────────────
+load_dotenv()
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 
 def get_groq_client():
@@ -76,7 +78,7 @@ Respond with ONLY this JSON (no explanation, no code fences):
 
     try:
         response = client.chat.completions.create(
-            model="gemma-4-9b-it",
+            model="gemma2-9b-it",
             messages=[
                 {"role": "system", "content": PREDICTION_SYSTEM_PROMPT},
                 {"role": "user", "content": user_prompt},
@@ -166,7 +168,7 @@ def run_chatbot_crew(message, history, nlp_analysis=None, market_context=None):
 
     try:
         response = client.chat.completions.create(
-            model="gemma-4-9b-it",
+            model="gemma2-9b-it",
             messages=messages,
             temperature=0.7,
             max_tokens=1500,
