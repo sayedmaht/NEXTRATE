@@ -1,22 +1,15 @@
-"""
-NextRate AI — CrewAI Agents Module (Groq-Powered)
-Uses Groq SDK directly for fast, intelligent chatbot and prediction responses.
-"""
-
 import os
 import json
 from groq import Groq
 
 # ─── Configuration ───────────────────────────────────────────────────────────
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "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")
-
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 
 def get_groq_client():
     """Get Groq client instance."""
     if GROQ_API_KEY:
         return Groq(api_key=GROQ_API_KEY)
     return None
-
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Prediction Agent (via Groq direct)
@@ -41,7 +34,6 @@ For FIAT currencies, you analyze:
 - Business environment and FDI flows
 
 You always provide structured predictions with quantified confidence levels and data-backed reasoning. You NEVER speculate without data. You provide your response strictly in the requested JSON format."""
-
 
 def run_prediction_crew(currency, currency_type, current_price, market_data, econ_data=None):
     """Generate AI price predictions using Groq's LLM."""
@@ -84,7 +76,7 @@ Respond with ONLY this JSON (no explanation, no code fences):
 
     try:
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="gemma2-9b-it",  # <--- UPDATED TO GEMMA
             messages=[
                 {"role": "system", "content": PREDICTION_SYSTEM_PROMPT},
                 {"role": "user", "content": user_prompt},
@@ -103,7 +95,6 @@ Respond with ONLY this JSON (no explanation, no code fences):
     except Exception as e:
         print(f"Groq prediction error: {e}")
         return None
-
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Chatbot Agent (via Groq direct, NLP-enhanced)
@@ -134,7 +125,6 @@ CHATBOT_SYSTEM_PROMPT = """You are **NextRate AI**, an elite financial intellige
 - If the NLP analysis provides market data, USE it in your response
 - Be conversational but professional
 - If you don't have exact data, provide well-reasoned estimates with context"""
-
 
 def run_chatbot_crew(message, history, nlp_analysis=None, market_context=None):
     """
@@ -176,7 +166,7 @@ def run_chatbot_crew(message, history, nlp_analysis=None, market_context=None):
 
     try:
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="gemma2-9b-it",  # <--- UPDATED TO GEMMA
             messages=messages,
             temperature=0.7,
             max_tokens=1500,
