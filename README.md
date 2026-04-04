@@ -1,13 +1,15 @@
-# [NEXTRATE](https://nextrate.vercel.app/)
+<div align="center">
+
+# ⚡ NextRate AI
 
 ### Real-Time Currency Converter with AI-Powered Predictions
 
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![Flask](https://img.shields.io/badge/Flask-3.1-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com)
-[![Groq](https://img.shields.io/badge/Groq-LLaMA_3.3-F55036?style=for-the-badge&logo=meta&logoColor=white)](https://groq.com)
+[![Groq](https://img.shields.io/badge/Groq-Gemma_4-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://groq.com)
 [![License](https://img.shields.io/badge/License-MIT-22d3ee?style=for-the-badge)](LICENSE)
 
-A premium dark-themed web application that converts currencies in real-time, provides AI-driven price predictions, and features an intelligent NLP-powered financial chatbot — all powered by **Groq's blazing-fast LLM inference**.
+A premium dark-themed web application that converts currencies in real-time, provides AI-driven price predictions, and features an intelligent NLP-powered financial chatbot — all powered by **Google's Gemma 4** via **Groq's blazing-fast inference**.
 
 [Features](#-features) · [Screenshots](#-screenshots) · [Quick Start](#-quick-start) · [API Keys](#-api-keys) · [Tech Stack](#-tech-stack) · [Deployment](#-deployment)
 
@@ -28,7 +30,7 @@ A premium dark-themed web application that converts currencies in real-time, pro
 - **Crypto analysis**: market cap, supply dynamics, volume, momentum
 - **Fiat analysis**: GDP growth, inflation, per capita income, debt-to-GDP
 - Confidence levels and key driving factors
-- Powered by **Groq LLM** (LLaMA 3.3 70B)
+- Powered by **Groq LLM** (Gemma 4 9B)
 
 ### 🤖 NLP-Powered AI Chatbot
 - **Intent classification** — detects price checks, conversions, predictions, comparisons, education queries
@@ -50,6 +52,24 @@ A premium dark-themed web application that converts currencies in real-time, pro
 - **Outfit + JetBrains Mono** typography
 - Spring physics animations
 - Fully responsive (desktop, tablet, mobile)
+
+---
+
+## 📸 Screenshots
+
+<div align="center">
+
+| Dashboard | Cryptocurrency Grid |
+|:---------:|:-------------------:|
+| ![Dashboard](https://via.placeholder.com/400x250/0b0e1a/22d3ee?text=Dashboard) | ![Crypto](https://via.placeholder.com/400x250/0b0e1a/22d3ee?text=Crypto+Grid) |
+
+| Currency Converter | AI Chatbot |
+|:------------------:|:----------:|
+| ![Converter](https://via.placeholder.com/400x250/0b0e1a/22d3ee?text=Converter) | ![Chatbot](https://via.placeholder.com/400x250/0b0e1a/22d3ee?text=AI+Chatbot) |
+
+</div>
+
+> 💡 *Replace the placeholder images above with actual screenshots from your running app.*
 
 ---
 
@@ -77,6 +97,9 @@ export GROQ_API_KEY=your_groq_api_key_here
 
 # Run the application
 python app.py
+```
+
+Open **http://localhost:5000** in your browser.
 
 ---
 
@@ -98,7 +121,7 @@ python app.py
 | Technology | Purpose |
 |-----------|---------|
 | **Flask** | Web server & REST API |
-| **Groq SDK** | LLM inference (LLaMA 3.3 70B) |
+| **Groq SDK** | LLM inference (Gemma 4 9B) |
 | **Custom NLP Engine** | Intent classification, entity extraction, sentiment detection |
 | **CoinGecko API** | Cryptocurrency market data |
 | **ExchangeRate API** | Fiat currency exchange rates |
@@ -176,7 +199,7 @@ User Message
     Context Builder → Injects live market data
            │
            ▼
-    Groq LLM (LLaMA 3.3 70B) → Rich markdown response
+    Groq LLM (Gemma 4 9B) → Rich markdown response
 ```
 
 ---
