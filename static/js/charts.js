@@ -40,6 +40,7 @@ async function loadHistory(days, btn) {
             const d = new Date(p.date);
             if (days <= 7) return d.toLocaleDateString('en', { weekday: 'short' });
             if (days <= 30) return d.toLocaleDateString('en', { month: 'short', day: 'numeric' });
+            if (days === 'max' || days >= 365) return d.toLocaleDateString('en', { month: 'short', year: 'numeric' });
             return d.toLocaleDateString('en', { month: 'short', year: '2-digit' });
         });
         const prices = data.map(p => p.price);
