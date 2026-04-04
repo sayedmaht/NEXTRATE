@@ -1,7 +1,7 @@
 """
 NextRate AI — NLP Engine
 Natural Language Processing for understanding user queries about currencies.
-Uses spaCy for entity extraction and custom intent classification.
+Uses regex-based entity extraction and custom intent classification.
 """
 
 import re
