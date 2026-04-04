@@ -1,6 +1,6 @@
 """
 NextRate AI - Real-time Currency Converter Backend
-Flask server with CrewAI agents (Groq-powered) + NLP for intelligent chatbot.
+Flask server with Gemma 4 AI agents (Groq-powered) + NLP for intelligent chatbot.
 """
 
 import os
@@ -252,13 +252,8 @@ def fiat_rates():
 
 @app.route("/api/fiat/history/<base_currency>/<target_currency>")
 def fiat_history(base_currency, target_currency):
-    """Generate simulated history for a fiat pair."""
-    days_param = request.args.get("days", "30")
-    num_days = 1825 if days_param == "max" else min(int(days_param), 1825)
-    if num_days < 1:
-        num_days = 30
-
-    cache_key = f"fiat_history_{base_currency}_{target_currency}_{days_param}"
+    """Generate simulated 30-day history for a fiat pair."""
+    cache_key = f"fiat_history_{base_currency}_{target_currency}"
     cached = get_cached(cache_key)
     if cached:
         return jsonify(cached)
@@ -278,11 +273,9 @@ def fiat_history(base_currency, target_currency):
     prices = []
     now = datetime.now()
     rate = current_rate * (1 + random.uniform(-0.05, 0.05))
-    # Scale daily volatility down for longer ranges to avoid unrealistic drift
-    daily_volatility = 0.003 if num_days > 365 else 0.008
-    for i in range(num_days, -1, -1):
+    for i in range(30, -1, -1):
         date = now - timedelta(days=i)
-        rate += rate * random.uniform(-daily_volatility, daily_volatility)
+        rate += rate * random.uniform(-0.008, 0.008)
         prices.append({
             "date": int(date.timestamp() * 1000),
             "price": round(rate, 6),
@@ -410,14 +403,14 @@ def _get_fiat_price_usd(currency_code):
 
 @app.route("/api/predict", methods=["POST"])
 def predict():
-    """Generate AI prediction using CrewAI Prediction Agent."""
+    """Generate AI prediction using Gemma 4 Prediction Agent."""
     data = request.json or {}
     currency = data.get("currency", "")
     currency_type = data.get("type", "crypto")  # crypto or fiat
     current_price = data.get("current_price", 0)
     market_data = data.get("market_data", {})
 
-    # Try CrewAI Prediction Agent first
+    # Try Gemma 4 Prediction Agent first
     econ_data = FIAT_ECONOMICS.get(currency, {}) if currency_type == "fiat" else None
     result = run_prediction_crew(currency, currency_type, current_price, market_data, econ_data)
     if result:
@@ -507,7 +500,7 @@ def generate_mock_prediction(currency, currency_type, current_price, market_data
 
 @app.route("/api/chat", methods=["POST"])
 def chat():
-    """AI chatbot with NLP intent detection and CrewAI agent (Groq-powered)."""
+    """AI chatbot with NLP intent detection and Gemma 4 agent (Groq-powered)."""
     data = request.json or {}
     message = data.get("message", "")
     history = data.get("history", [])
@@ -540,7 +533,7 @@ def chat():
     except Exception:
         pass
 
-    # Step 3: Run CrewAI Chatbot Agent with NLP context
+    # Step 3: Run Gemma 4 Chatbot Agent with NLP context
     result = run_chatbot_crew(message, history, nlp_analysis, market_context)
     if result:
         return jsonify({"response": result, "nlp": {"intent": nlp_analysis['intent'], "entities": nlp_analysis['all_currencies']}})
@@ -657,6 +650,6 @@ if __name__ == "__main__":
     print("\n🚀 NextRate AI Server Starting...")
     print(f"   Groq API: {'✅ Configured' if GROQ_API_KEY else '⚠️  Not set (using mock mode)'}")
     print(f"   NLP Engine: Intent Classification + Entity Extraction")
-    print(f"   CrewAI Agents: Prediction Specialist, Chatbot Assistant")
+    print(f"   Gemma 4 Agents: Prediction Specialist, Chatbot Assistant")
     print(f"   Open: http://localhost:5000\n")
     app.run(debug=True, port=5000)
