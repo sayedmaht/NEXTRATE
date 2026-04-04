@@ -466,11 +466,12 @@ def chat():
 
     # Step 3: Run Gemma 4 Chatbot Agent with NLP context
     result = run_chatbot_crew(message, history, nlp_analysis, market_context)
-    if result:
+    if result and not str(result).startswith("ERROR:"):
         return jsonify({"response": result, "nlp": {"intent": nlp_analysis['intent'], "entities": nlp_analysis['all_currencies']}})
 
-    # Fallback if Gemma 4 is unavailable
-    return jsonify({"response": "⚠️ I'm having trouble connecting to my AI engine right now. Please make sure the Groq API key is configured and try again in a moment.", "nlp": {"intent": nlp_analysis['intent'], "entities": nlp_analysis['all_currencies']}})
+    # Show actual error to help debug
+    error_detail = str(result).replace("ERROR: ", "") if result else "Groq API key not configured"
+    return jsonify({"response": f"⚠️ AI Error: {error_detail}", "nlp": {"intent": nlp_analysis['intent'], "entities": nlp_analysis['all_currencies']}})
 
 
 # Simple cache for sharing crypto data with chat
