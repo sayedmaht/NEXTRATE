@@ -211,10 +211,6 @@ function createCryptoCard(coin) {
 }
 
 function createFiatCard(cur) {
-    const change = cur.change_24h || 0;
-    const changeClass = change >= 0 ? 'positive' : 'negative';
-    const changeIcon = change >= 0 ? '▲' : '▼';
-
     return `
         <div class="currency-card" onclick="openModal('${cur.code}', 'fiat')">
             <div class="currency-card-header">
@@ -228,9 +224,7 @@ function createFiatCard(cur) {
             </div>
             <div class="currency-card-body">
                 <div class="currency-price">${cur.symbol}${cur.rate ? cur.rate.toFixed(4) : '--'}</div>
-                <div class="currency-change ${changeClass}">
-                    ${changeIcon} ${Math.abs(change).toFixed(2)}%
-                </div>
+                <div class="currency-change" style="opacity: 0.6;">vs USD</div>
             </div>
         </div>
     `;
@@ -462,7 +456,6 @@ function openModal(id, type) {
         grid.innerHTML = `
             <div class="overview-item"><div class="label">Exchange Rate (vs USD)</div><div class="value">${currentModalCurrency.rate ? currentModalCurrency.rate.toFixed(6) : '--'}</div></div>
             <div class="overview-item"><div class="label">Price in USD</div><div class="value">$${currentModalCurrency.price_usd ? currentModalCurrency.price_usd.toFixed(6) : '--'}</div></div>
-            <div class="overview-item"><div class="label">24h Change</div><div class="value ${(currentModalCurrency.change_24h || 0) >= 0 ? 'text-green' : 'text-red'}">${(currentModalCurrency.change_24h || 0).toFixed(2)}%</div></div>
             <div class="overview-item"><div class="label">Country</div><div class="value">${currentModalCurrency.country}</div></div>
             <div class="overview-item"><div class="label">Symbol</div><div class="value">${currentModalCurrency.symbol}</div></div>
             <div class="overview-item"><div class="label">Currency Code</div><div class="value">${currentModalCurrency.code}</div></div>
