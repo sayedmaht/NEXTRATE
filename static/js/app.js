@@ -431,6 +431,9 @@ function openModal(id, type) {
         document.getElementById('modalName').textContent = currentModalCurrency.name;
         document.getElementById('modalSymbol').textContent = currentModalCurrency.symbol;
 
+        // Ensure Yearly and All Time are visible for Crypto
+        document.querySelectorAll('.crypto-only').forEach(btn => btn.style.display = 'inline-block');
+
         // Overview
         const grid = document.getElementById('overviewGrid');
         grid.innerHTML = `
@@ -451,6 +454,10 @@ function openModal(id, type) {
         document.getElementById('modalIcon').innerHTML = currentModalCurrency.flag;
         document.getElementById('modalName').textContent = currentModalCurrency.name;
         document.getElementById('modalSymbol').textContent = `${currentModalCurrency.code} — ${currentModalCurrency.country}`;
+
+        // Ensure Yearly and All Time are hidden for Fiat to prevent API loops/hangs
+        document.querySelectorAll('.crypto-only').forEach(btn => btn.style.display = 'none');
+
 
         const grid = document.getElementById('overviewGrid');
         grid.innerHTML = `
