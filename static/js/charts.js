@@ -28,7 +28,7 @@ async function loadHistory(days, btn) {
     if (currentModalType === 'crypto') {
         url = `/api/crypto/${currentModalCurrency.id}/history?days=${days}`;
     } else {
-        url = `/api/fiat/history/USD/${currentModalCurrency.code}?days=${days}`;
+        url = `/api/fiat/history/USD/${currentModalCurrency.code}`;
     }
 
     try {
@@ -38,7 +38,6 @@ async function loadHistory(days, btn) {
 
         const labels = data.map(p => {
             const d = new Date(p.date);
-            if (days === 'max') return d.toLocaleDateString('en', { month: 'short', year: 'numeric' });
             if (days <= 7) return d.toLocaleDateString('en', { weekday: 'short' });
             if (days <= 30) return d.toLocaleDateString('en', { month: 'short', day: 'numeric' });
             return d.toLocaleDateString('en', { month: 'short', year: '2-digit' });
@@ -128,8 +127,15 @@ async function loadPrediction() {
             body: JSON.stringify(body)
         });
 
-        if (!resp.ok) throw new Error('Prediction API error');
+        if (!resp.ok) {
+            const errData = await resp.json().catch(() => ({}));
+            throw new Error(errData.error || 'Prediction API error');
+        }
         const prediction = await resp.json();
+
+        if (prediction.error) {
+            throw new Error(prediction.error);
+        }
 
         renderPredictionInfo(prediction);
         renderPredictionChart(ctx, prediction);
@@ -137,8 +143,8 @@ async function loadPrediction() {
         console.error('Prediction failed:', err);
         document.getElementById('predictionInfo').innerHTML = `
             <div class="prediction-card" style="grid-column: 1 / -1;">
-                <div class="pred-label">Error</div>
-                <div class="pred-value text-red">Failed to load prediction. Please try again.</div>
+                <div class="pred-label">⚠️ AI Prediction Unavailable</div>
+                <div class="pred-value text-red">${err.message || 'Could not generate prediction. Please ensure the Groq API key is configured.'}</div>
             </div>
         `;
     }
