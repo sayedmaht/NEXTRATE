@@ -28,7 +28,7 @@ async function loadHistory(days, btn) {
     if (currentModalType === 'crypto') {
         url = `/api/crypto/${currentModalCurrency.id}/history?days=${days}`;
     } else {
-        url = `/api/fiat/history/USD/${currentModalCurrency.code}`;
+        url = `/api/fiat/history/USD/${currentModalCurrency.code}?days=${days}`;
     }
 
     try {
@@ -38,9 +38,9 @@ async function loadHistory(days, btn) {
 
         const labels = data.map(p => {
             const d = new Date(p.date);
+            if (days === 'max') return d.toLocaleDateString('en', { month: 'short', year: 'numeric' });
             if (days <= 7) return d.toLocaleDateString('en', { weekday: 'short' });
             if (days <= 30) return d.toLocaleDateString('en', { month: 'short', day: 'numeric' });
-            if (days === 'max' || days >= 365) return d.toLocaleDateString('en', { month: 'short', year: 'numeric' });
             return d.toLocaleDateString('en', { month: 'short', year: '2-digit' });
         });
         const prices = data.map(p => p.price);
@@ -106,7 +106,7 @@ async function loadPrediction() {
     const body = {
         currency: currentModalType === 'crypto' ? currentModalCurrency.name : currentModalCurrency.code,
         type: currentModalType,
-        current_price: currentModalType === 'crypto' ? currentModalCurrency.current_price : currentModalCurrency.rate,
+        current_price: currentModalType === 'crypto' ? currentModalCurrency.current_price : currentModalCurrency.price_usd,
         market_data: currentModalType === 'crypto' ? {
             market_cap: currentModalCurrency.market_cap,
             total_volume: currentModalCurrency.total_volume,
@@ -128,15 +128,8 @@ async function loadPrediction() {
             body: JSON.stringify(body)
         });
 
-        if (!resp.ok) {
-            const errData = await resp.json().catch(() => ({}));
-            throw new Error(errData.error || 'Prediction API error');
-        }
+        if (!resp.ok) throw new Error('Prediction API error');
         const prediction = await resp.json();
-
-        if (prediction.error) {
-            throw new Error(prediction.error);
-        }
 
         renderPredictionInfo(prediction);
         renderPredictionChart(ctx, prediction);
@@ -144,8 +137,8 @@ async function loadPrediction() {
         console.error('Prediction failed:', err);
         document.getElementById('predictionInfo').innerHTML = `
             <div class="prediction-card" style="grid-column: 1 / -1;">
-                <div class="pred-label">⚠️ AI Prediction Unavailable</div>
-                <div class="pred-value text-red">${err.message || 'Could not generate prediction. Please ensure the Groq API key is configured.'}</div>
+                <div class="pred-label">Error</div>
+                <div class="pred-value text-red">Failed to load prediction. Please try again.</div>
             </div>
         `;
     }
@@ -199,7 +192,7 @@ function renderPredictionInfo(prediction) {
 function renderPredictionChart(ctx, prediction) {
     const currentPrice = currentModalType === 'crypto'
         ? currentModalCurrency.current_price
-        : currentModalCurrency.rate;
+        : currentModalCurrency.price_usd;
 
     const predictions = prediction.prediction_30d || [];
     if (!predictions.length) return;
