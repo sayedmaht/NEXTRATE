@@ -232,7 +232,7 @@ function createFiatCard(cur) {
                 </div>
             </div>
             <div class="currency-card-body">
-                <div class="currency-price">${cur.symbol}${cur.rate ? cur.rate.toFixed(4) : '--'}</div>
+                <div class="currency-price">${formatPrice(cur.price_usd)}</div>
                 <div class="currency-change ${changeClass}">
                     ${changeIcon} ${Math.abs(change).toFixed(2)}%
                 </div>
