@@ -35,15 +35,16 @@ document.addEventListener('DOMContentLoaded', () => {
         loader.classList.add('hidden');
         setTimeout(() => loader.style.display = 'none', 800);
     }, 1500);
-    
+
     syncInterval = setInterval(loadData, 60000);
 });
 
 async function loadData() {
     try {
-        const [cryptoRes, fiatRes] = await Promise.all([
+        const [cryptoRes, fiatRes, fngRes] = await Promise.all([
             fetch('/api/crypto/list'),
-            fetch('/api/fiat/rates')
+            fetch('/api/fiat/rates'),
+            fetch('/api/fng')
         ]);
 
         if (cryptoRes.ok) {
@@ -51,6 +52,31 @@ async function loadData() {
         }
         if (fiatRes.ok) {
             fiatData = await fiatRes.json();
+        }
+
+        if (fngRes && fngRes.ok) {
+            const fngData = await fngRes.json();
+            const fngValEl = document.getElementById('statFngValue');
+            const fngClassEl = document.getElementById('statFngClass');
+
+            if (fngData && fngData.value && fngValEl && fngClassEl) {
+                fngValEl.textContent = fngData.value;
+                fngClassEl.textContent = fngData.value_classification;
+
+                // Color code the class label
+                const val = parseInt(fngData.value, 10);
+                if (val <= 25) {
+                    fngClassEl.style.backgroundColor = 'var(--neon-red)'; // Extreme Fear
+                } else if (val <= 45) {
+                    fngClassEl.style.backgroundColor = 'var(--neon-orange)'; // Fear
+                } else if (val <= 55) {
+                    fngClassEl.style.backgroundColor = 'var(--neon-yellow)'; // Neutral
+                } else if (val <= 75) {
+                    fngClassEl.style.backgroundColor = 'var(--color-lime)'; // Greed
+                } else {
+                    fngClassEl.style.backgroundColor = 'var(--neon-green)'; // Extreme Greed
+                }
+            }
         }
 
         updateApiStatus(true);
