@@ -134,6 +134,29 @@ def index():
 # ROUTES — Crypto API
 # ═══════════════════════════════════════════════════════════════════════════════
 
+@app.route("/api/fng")
+def get_fng():
+    """Get Fear and Greed Index."""
+    cached = get_cached("fng")
+    if cached:
+        return jsonify(cached)
+
+    try:
+        resp = requests.get("https://api.alternative.me/fng/", timeout=8)
+        if resp.status_code == 200:
+            data = resp.json()
+            result = data.get("data", [{}])[0]
+            set_cache("fng", result)
+            return jsonify(result)
+        else:
+            stale = get_cached("fng", allow_stale=True)
+            if stale: return jsonify(stale)
+            return jsonify({"error": "FNG API error", "status": resp.status_code}), 502
+    except Exception as e:
+        stale = get_cached("fng", allow_stale=True)
+        if stale: return jsonify(stale)
+        return jsonify({"error": str(e)}), 500
+
 @app.route("/api/crypto/list")
 def crypto_list():
     """Get top 120 cryptocurrencies with market data."""

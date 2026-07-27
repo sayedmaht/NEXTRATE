@@ -620,6 +620,10 @@ body {
     background: var(--color-yellow);
 }
 
+.stat-card:nth-child(5)::before {
+    background: var(--color-purple);
+}
+
 .stat-card::after {
     display: none;
 }
